@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { createContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -16,6 +15,22 @@ export const UserProvider = ({ children }: iUserContextProps) => {
     const [idUpdate, setIdUpdate] = useState()
     const token = localStorage.getItem("@TOKEN")
     const navigate = useNavigate()
+
+    async function createNewUser(data: any) {
+        console.log(data)
+        await api.post("users", data)
+            .then(res => {
+                console.log(res)
+                toast.success("Usuario cadastrado com sucesso")
+                setTimeout(() => {
+                    navigate('/')
+                }, 2000)
+                return res
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
 
     async function loginUser(data: any) {
         await api.post("login", data)
@@ -91,7 +106,7 @@ export const UserProvider = ({ children }: iUserContextProps) => {
     }
 
     return (
-        <UserContext.Provider value={{user, setUser, loginUser, getUserData, createNewContact, deleteContact, logout, setIdUpdate, updateContact}}>
+        <UserContext.Provider value={{user, setUser, loginUser, getUserData, createNewContact, deleteContact, logout, setIdUpdate, updateContact, createNewUser}}>
             {children}
         </UserContext.Provider>
     )
